@@ -136,7 +136,7 @@ Question to investigate more:
 * Why are the failures of Combined regional anesthesia and catheter that high?
 * Why does catheter have the lowest number of indication?
 
-![Successful analgesia per type](4_analgesia_per_type.jpg)
+![Successful analgesia per type](4_Analgesia_per_type.JPG)
 
 
 ### 5. Frequent time of rebound pain
@@ -159,7 +159,7 @@ Quick insight:
 - Some cases have pain 2 or 3 days later.
 - After 4 days, no patient reports to have pain. 
 
-![Time of rebound pain](5_Time_of_Rebound_pain.jpg)
+![Time of rebound pain](5_Time_of_Rebound_pain.JPG)
 
 *The column chart visualizes the time when patients report to have pain back after surgery (from Feb to Aug 2023).*
 
@@ -168,7 +168,7 @@ Quick insight:
 - Most patients have very early mobility, on Day 0 and in the morning of Day 1. 
 - Question to investigate furthur: why some patients have delayed mobility?
 
-![Time of first standing up](6_Time_standing_up.jpg)
+![Time of first standing up](6_Time_standing_up.JPG)
 
 *Scatter chart represents the correlation of pain level and time of mobility of patients having surgeries between Feb and Aug 2023.*
 
@@ -177,7 +177,7 @@ Quick insight:
 
 To show the average score given by patients about PROMs (Patient-reported outcome measures) and the 95% confidence interval, I used Power BI to visualize the trend as below:
 
-![PROMs](7_PROMs.jpg)
+![PROMs](7_PROMs.JPG)
 
 It shows that most patients are happy about their outcomes, with an average score of 140/150 and very tight 95% confidence interval.
 
@@ -208,4 +208,4 @@ Even though the quality is good on average, there are issues to investigate furt
     - Why some patients have poor outcome? This can be related to failure of rescue? failed technique? Complex pain syndrome, for instance, in cancer patient?,...
 
 Below is the dashboard I built on Power BI to present data insight to the hospital management.
-    ![Dashboard](8_dashboard.jpg)
+    ![Dashboard](8_Dashboard.JPG)
