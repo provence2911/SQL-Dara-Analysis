@@ -11,6 +11,7 @@ SQL queries? Check them out here: [pope.sql](/SQL_P1_Pain_management/Pope.sql)
 4. What is the number of success and failure by type of analgesia?
 5. When do patients usually have pain?
 6. What is the correlation between pain and first standing up time?
+7. What is the PROMS score by month?
 
 # Tools I used
 - **SQL**
