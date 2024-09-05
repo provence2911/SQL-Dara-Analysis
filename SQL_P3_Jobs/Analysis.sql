@@ -103,9 +103,10 @@ JOIN skills_job_dim sk
 ON sk.job_id = fact.job_id
 JOIN skills_dim 
 ON skills_dim.skill_id = sk.skill_id
-WHERE job_title_short = 'Data analyst'
+WHERE job_title_short = 'Data analyst' AND job_work_from_home = 1
 GROUP BY skills
 ORDER BY 2 DESC
+
 
 /*
 What are the tops skills based on salary?
@@ -129,8 +130,5 @@ ORDER BY 2 DESC
 
 /* Insight:
 Here are the key insights in 3 concise bullet points:
-- **Niche and Emerging Technologies Pay the Most:** Skills in SVN, Solidity, and Couchbase lead the top paying list, indicating high demand for expertise in specialized and emerging technologies.
-- **Machine Learning and DevOps Skills Are Highly Valued:** Proficiency in machine learning frameworks (e.g., MXNet, Keras) and DevOps tools (e.g., VMware, Terraform) commands high salaries, reflecting their critical role in data analytics.
-- **Diverse Skill Set Needed for High Pay:** A mix of programming languages (e.g., Golang, Scala), database management (e.g., Cassandra), and version control/collaboration tools (e.g., GitLab, Bitbucket) highlights the broad range of skills that contribute to higher earnings in data analyst roles.
-*/
+
 
