@@ -1,7 +1,3 @@
-/* INTRODUCTION:
-Data of Pain control quality
-Collected by nurses, evaluated by patients before hospital discharge from Feb to Aug 2023. This dataset is to analyse post-op pain management quality of the hospital
-*/
 
 USE Practice;
 GO
@@ -68,10 +64,6 @@ FROM po1
 GROUP BY month(date_of_surgery),FORMAT(date_of_surgery,'MMM')
 GO
 
-/* Insight:
-Overall, the success rate is > 80%. 
-Feb has the lowest rate because the data collected was only in the final week of Feb 2023 => affected by the sample size.
-*/
 
 /* Did patient receive response from medical staff when having pain?
 Number of successful rescue? */
@@ -95,41 +87,36 @@ SELECT month_num, month,
 	  SUM(successful_rescue) as num_successful_rescue,
 	  SUM(rescue_available) - SUM(successful_rescue) as num_failed_rescue
 FROM rescue_sub
-GROUP BY month_num, month
+GROUP BY month_num, month;
 GO
 
-/*Insight: 
-Yes, ~90% of patients having pain received pain rescue. Some cases this data were not documented.
-*/
 
--- Successful rate of first attempt per type of analgesia
+-- Successful rate per type of analgesia
 
 DROP VIEW IF exists type_of_analgesia;
 
 CREATE VIEW type_of_analgesia AS
 
 WITH type_of_analgesia AS
-(SELECT PID, date_of_surgery, catheter, singleshot,
-CASE WHEN catheter IS NULL AND singleshot IS NOT NULL THEN 'Single shot' 
-     WHEN catheter IS NOT NULL AND singleshot IS NULL THEN 'Catheter'
-	 WHEN catheter IS NULL AND singleshot IS NULL THEN 'No RA' 
-	 ELSE 'Combine' END as Analgesia_type,
-CASE WHEN max_vas <= 3 OR max_vas IS NULL THEN 1 ELSE 0 END AS 'first_attempt_success'
+(SELECT 
+    PID, date_of_surgery, catheter, singleshot,
+    CASE 
+        WHEN catheter IS NULL AND singleshot IS NOT NULL THEN 'Single shot' 
+        WHEN catheter IS NOT NULL AND singleshot IS NULL THEN 'Catheter'
+	    WHEN catheter IS NULL AND singleshot IS NULL THEN 'No RA' 
+	    ELSE 'Combine' END as Analgesia_type,
+    CASE 
+        WHEN max_vas <= 3 OR max_vas IS NULL THEN 1 ELSE 0 END AS 'success'
 FROM po1)
 
-SELECT month(Date_of_Surgery) as Month_num, FORMAT(date_of_surgery,'MMM') as Month, Analgesia_type,
-      count(*) as total,
-	  SUM(first_attempt_success) as "first_attempt_total_success",
-	  COUNT(*) - SUM(first_attempt_success)  as "first_attempt_total_failure"
+SELECT 
+    MONTH(Date_of_Surgery) as Month_num, 
+    FORMAT(date_of_surgery,'MMM') as Month, Analgesia_type,
+    COUNT(*) as total,
+	SUM(success) as "total_success",
+	COUNT(*) - SUM(success)  as "total_failure"
 FROM type_of_analgesia
 GROUP BY month(Date_of_Surgery), FORMAT(date_of_surgery,'MMM'),  Analgesia_type;
-GO
-
-/*Insight:
-General anesthesia (no regional blocks) > singleshot > catheter > combined single shot and catheter. Need to do more surveys on reasons of failure/difficulties: poor indication? poor technique? Equipment? Difficult case? ... for training.
-
-Question: Catheter has the lowest number of indication. Why?
-*/
 
 -- Ratio of rescue
 
@@ -144,10 +131,6 @@ WHERE Type_of_Rescue IS NOT NULL
 GROUP BY month(Date_of_Surgery), FORMAT(Date_of_Surgery,'MMM'), Type_of_Rescue;
 GO
 
-/*Insight:
-Mainly by regional anesthesia and pain killer. Very rare cases with opioid rescue. This can be due to complex pain syndrome (cancer patients), difficult techniques to perform or poor follow up/ organisation
-*/
-
 -- Day when most severe pain happens
 
 DROP VIEW IF exists day_of_max_pain;
@@ -161,31 +144,3 @@ FROM po1
 WHERE max_vas > 5 AND Day_of_max_pain IS NOT NULL
 GROUP BY month(Date_of_Surgery), FORMAT(Date_of_Surgery,'MMM'), day_of_max_pain;
 Go
-
-/* Insight:
-Most patients have significant pain back (VAS > 5) right after surgeries (Day 0 and Day 1). We need to have closer follow - up and manpower to response immediately once patients report to have pain.
-*/
-
-
--- Insomnia vs Pain
-
-SELECT Insomnia, MAX_VAS
-FROM po1
-WHERE insomnia IS NOT NULL;
-GO
-
--- Standup Time vs Pain
-
-SELECT  type_of_surgery, MAX_VAS, _1st_Standing_up
-FROM po1
-WHERE _1st_Standing_up IS NOT NULL
-GO
-
-SELECT*
-FROM po1;
-GO
-
-/* Insight:
-Most patients started to stand up early, which is the goal to reach early mobility.
-But why some patients with low level of pain have delayed standing up?
-*/
