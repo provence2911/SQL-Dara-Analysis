@@ -100,7 +100,7 @@ Here is the breakdown of pain rescue distribution:
 - Most patients receive regional anesthesia and pain killer. 
 - Only in some rare cases, patients need opioid rescue. This can be due to complex pain syndrome (cancer patients), difficult techniques to perform or poor follow up/ organisation.
 
-![Rescue ratio](3_ratio_rescue.jpg)
+![Rescue ratio](3_Ratio_rescue.JPG)
 
 *The pie chart shows the ratio of pain rescue method from Feb to Aug 2023.*
 
