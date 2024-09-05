@@ -53,31 +53,6 @@ JOIN skills_dim
 ON skills_dim.skill_id = sk.skill_id
 ORDER BY salary_year_avg DESC;
 
-WITH top_10 AS (
-SELECT TOP(10)
-        name as company_name,
-        job_id,
-        job_title,
-        salary_year_avg
-FROM
-        job_postings_fact
-LEFT JOIN company_dim
-ON company_dim.company_id = job_postings_fact.company_id
-WHERE
-        job_title_short = 'data analyst' AND job_location = 'anywhere'
-        AND salary_year_avg IS NOT NULL
-ORDER BY salary_year_avg DESC
-)
-SELECT 
-        skills,
-        COUNT(top_10.job_id) 
-FROM top_10
-JOIN skills_job_dim sk
-ON sk.job_id = top_10.job_id
-JOIN skills_dim 
-ON skills_dim.skill_id = sk.skill_id
-GROUP BY skills
-ORDER BY 2 DESC
 
 
 /* Insight:
