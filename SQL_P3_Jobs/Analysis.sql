@@ -54,46 +54,8 @@ ON skills_dim.skill_id = sk.skill_id
 ORDER BY salary_year_avg DESC;
 
 
+-- Top 5 skills in remote jobs
 
-/* Insight:
-SQL is leading, then Python follows closely
-Tableau is also highly sought after
-Other skills like R, Snowflake, Pandas, Excel show varying degrees of demand.
-*/
-
-/* Top 5 skills most demanded (skills name, frequency)
-Question: What are the most in-demand skills for Data analysts?
-*/
-
--- Case 1: Top 5 skills in remote jobs
-
-WITH job_by_location AS
-(SELECT 
-        job_id,
-        CASE
-            WHEN job_location = 'Anywhere' THEN 'remote'
-            WHEN job_location = 'New York, NY' THEN 'local'
-            ELSE 'Onsite' 
-            END AS location_category
-FROM job_postings_fact
-),
-
-remote_job AS
-(
-SELECT job_id
-FROM job_by_location
-WHERE location_category = 'remote')
-
-SELECT TOP 5 skills_job_dim.skill_id, skills_dim.skills as skill_name, count(skills_job_dim.skill_id) as frequency
-FROM remote_job r
-JOIN skills_job_dim
-ON r.job_id = skills_job_dim.job_id
-JOIN skills_dim
-ON skills_dim.skill_id = skills_job_dim.skill_id
-GROUP BY skills_job_dim.skill_id, skills_dim.skills
-ORDER BY 3 DESC;
-
--- Case 2: Top 5 skills in all job postings
 
 SELECT top (5) 
     skills,
@@ -109,11 +71,7 @@ ORDER BY 2 DESC
 
 
 /*
-What are the tops skills based on salary?
-- Look at the average salary associated with each skill for Data analyst job
-- Focuses on role with specified salaries, regardless of location
-- Why? It reveals how different skills impact salary levels for data analyst and helps identify the most rewarding skills to acquire or improve.
-*/
+What are the tops optimal skills?*/
 
 SELECT TOP(25)
     skills,
@@ -128,7 +86,5 @@ WHERE job_title_short = 'Data analyst' AND salary_year_avg IS NOT NULL
 GROUP BY skills
 ORDER BY 2 DESC
 
-/* Insight:
-Here are the key insights in 3 concise bullet points:
 
 
