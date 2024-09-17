@@ -37,8 +37,8 @@ FROM po1
 GROUP BY month(date_of_surgery), FORMAT(date_of_surgery,'MMM');
 ```
 Quick insight:
-Overall, the success rate is > 80%. 
-Feb has the lowest rate because of the data sample. Data collection was only within the final week of Feb 2023.
+Overall, the success rate is > 85%. 
+Mar has the lowest rate because of small data sample due to incomplete data collection.
 
 ![Successful rate by month](1_Successful_rate_pain_free.JPG)
 
@@ -76,8 +76,8 @@ FROM rescue_sub
 GROUP BY month_num, month;
 ```
 Here is the percentage of patients having efficient pain control within 1 hour since the notification.
-On average, over 90% of patients have pain response from medical staff. 95% of these responses are effective.
-For the other 10% that don't receive pain response, these data were missing.
+On average, over 95% of patients have pain response from medical staff. Nearly 100% of these responses are effective.
+For a few cases that don't receive pain response, these data were missing.
 
 ![Pain rescue](2_Pain_rescue.JPG)
 
@@ -97,28 +97,16 @@ GROUP BY month(Date_of_Surgery), FORMAT(Date_of_Surgery,'MMM'), Type_of_Rescue;
 ```
 
 Here is the breakdown of pain rescue distribution:
-- Most patients receive regional anesthesia and pain killer. 
+- More than 95% of patients who need rescue receive regional anesthesia and pain killer. 
 - Only in some rare cases, patients need opioid rescue. This can be due to complex pain syndrome (cancer patients), difficult techniques to perform or poor follow up/ organisation.
 
-![Rescue ratio](SQL_P1_Pain_management/Chart_images/3_Ratio_rescue.JPG)
+![Rescue ratio](3_Ratio_rescue.JPG)
 
-*The pie chart shows the ratio of pain rescue method from Feb to Aug 2023.*
+*The pie chart shows the ratio of pain rescue method from Mar to Aug 2023.*
 
 ### 4.1. Overall successful rate at first attempt per type of analgesia
-Based on the field of what analgesia technique used for each case, I used CASE function to group into 4 categories: Single shot, Catheter, Combined single shot and catheter and No RA (no single shot nor catheter)
-```sql
-WITH type_of_analgesia AS
-(SELECT 
-    PID, date_of_surgery, catheter, singleshot,
-    CASE 
-        WHEN catheter IS NULL AND singleshot IS NOT NULL THEN 'Single shot' 
-        WHEN catheter IS NOT NULL AND singleshot IS NULL THEN 'Catheter'
-	    WHEN catheter IS NULL AND singleshot IS NULL THEN 'No RA' 
-	    ELSE 'Combine' END as Analgesia_type,
-    CASE 
-        WHEN max_vas <= 3 OR max_vas IS NULL THEN 1 ELSE 0 END AS 'success'
-FROM po1)
 
+```sql
 SELECT 
     MONTH(Date_of_Surgery) as Month_num, 
     FORMAT(date_of_surgery,'MMM') as Month, Analgesia_type,
@@ -129,55 +117,41 @@ FROM type_of_analgesia
 GROUP BY month(Date_of_Surgery), FORMAT(date_of_surgery,'MMM'),  Analgesia_type;
 ```
 Here is what I found:
-* The total number of cases from most to least every month:
-no regional anaesthesia> single-shot> catheter > combined single shot and catheter.
-* Combined single shot and catheter, and catheter have many failures.
-Question to investigate more:
-* Why are the failures of Combined regional anesthesia and catheter that high?
-* Why does catheter have the lowest number of indications?
+* The total number of cases from highest to lowest:
+single-shot & medication > medication alone > catheter and medication.
+* Regional anesthesia (catheter and single) shows there are failed analgesia procedures.
 
-![Successful analgesia per type](SQL_P1_Pain_management/Chart_images/4_Analgesia_per_type.JPG)
+![Successful analgesia per type](4_Analgesia_per_type.JPG)
 
 
 ### 5. Frequent times of rebound pain
 Exploring what day after surgery patients often have pain back.
 
-```sql
-SELECT 
-    month(Date_of_Surgery) as Month_num, 
-    FORMAT(Date_of_Surgery,'MMM') as "Month", 
-    day_of_max_pain, 
-    COUNT(*) / (SELECT CAST( COUNT(*) AS NUMERIC(4,2))
-						FROM po1
-						WHERE MAX_VAS >5) as "%frequency"
-FROM po1
-WHERE max_vas > 5 AND Day_of_max_pain IS NOT NULL
-GROUP BY month(Date_of_Surgery), FORMAT(Date_of_Surgery,'MMM'), day_of_max_pain;
-```
 Quick insight:
-- After surgery, the vast majority of patients have rebound pain on the same day of surgery (Day 0) and the next day (Day 1)
-- Some cases have pain 2 or 3 days later.
+- After surgery, the vast majority of patients have rebound pain on the same day of surgery (Day 0), Day 1 and Day 2. There is a significant number of patients having pain back on Day 1.
+- From day 1, this number starts to decrease sharply.
+- Most patients if in pain have a pain score between 4 and 5. Only a few cases report to have extreme pain VAS >7.
 - After 4 days, no patient reports to have pain. 
 
-![Time of rebound pain](SQL_P1_Pain_management/Chart_images/5_Time_of_Rebound_pain.JPG)
+![Time of rebound pain](5_Time_of_Rebound_pain.JPG)
 
-*The column chart visualizes the time when patients report to have pain back after surgery (from Feb to Aug 2023).*
+*The ribbon chart visualizes the time when patients report to have pain back after surgery (from Mar to Aug 2023).*
 
 ### 6. What is the correlation between pain and first standing up time?
 
 - Most patients have very early mobility, on Day 0 and in the morning of Day 1. 
 - Question to investigate further: why some patients have delayed mobility?
 
-![Time of first standing up](SQL_P1_Pain_management/Chart_images/6_Time_standing_up.JPG)
+![Time of first standing up](6_Time_standing_up.JPG)
 
-*Scatter chart represents the correlation of pain level and time of mobility of patients having surgeries between Feb and Aug 2023.*
+*Scatter chart represents the correlation of pain level and time of mobility of patients having surgeries between Mar and Aug 2023.*
 
 
 ### 7. Patient outcome (QOR-15)
 
 To show the average score given by patients about PROMs (Patient-reported outcome measures) and the 95% confidence interval, I used Power BI to visualize the trend as below:
 
-![PROMs](SQL_P1_Pain_management/Chart_images/7_PROMs.JPG)
+![PROMs](7_PROMs.JPG)
 
 It shows that most patients are happy about their outcomes, with an average score of 140/150 and a very tight 95% confidence interval.
 
@@ -189,16 +163,16 @@ It shows that most patients are happy about their outcomes, with an average scor
 # Conclusion
 ### Insights:
 From the analysis, here is the actual situation of the hospital in terms of pain management quality:
-1. **Rate of pain-free or mild pain surgeries:** ~ 80% of patients don't have pain after surgeries
-2. **Pain response:** ~ 85% of patients with pain received efficient pain relief within 1 hour.
+1. **Rate of pain-free or mild pain surgeries:** 85% of patients don't have pain after surgeries
+2. **Pain response:** 95% of patients with pain received efficient pain relief within 1 hour.
 3. **Ratio of pain rescue method:** Regional anaesthesia and pain medication are primarily used. Only a few cases required opioids.
-4. **Analgesia method:** Top 1 methods are medication and non-regional anaesthesia, followed by combined regional anaesthesia (single shot and catheter). However, there are many failures in regional anaesthesia techniques.
-5. **Time of rebound pain:**  Mostly on the same day and the next day 
+4. **Analgesia method:** Top 1 methods are medication and regional anaesthesia. However, there are quite failures in regional anaesthesia performance.
+5. **Time of rebound pain:**  Mostly pain comes back in Day 0, rises significantly on Day 1 and starts to decrease steadily from Day 2
 6. **8Pain and the first standing up time:** Most patients have early mobility (on Day 0 and Day 1 morning)
 7. **Patient outcome measurement:** Most patients report to have good outcome (on average 140/150)
 
 ### Closing thoughts:
-This project helps me see the quality of pain control for patients undergoing surgeries from Feb to Aug 2023.
+This project helps me see the quality of pain control for patients undergoing surgeries from Mar to Aug 2023.
 Even though the quality is good on average, there are issues to investigate further to build an action plan:
 - Some data is missing for pain rescue. The nurses need to pay more attention to collecting these data. If needed, need to review the medical records to look for these missing data.
 - Further investigation is needed to find out:
@@ -208,4 +182,4 @@ Even though the quality is good on average, there are issues to investigate furt
     - Why some patients have poor outcomes? This can be related to the failure of rescue. failed technique? Complex pain syndrome, for instance, in cancer patients?,...
 
 Below is the dashboard I built on Power BI to present data insight to the hospital management.
-    ![Dashboard](SQL_P1_Pain_management/Chart_images/8_Dashboard.JPG)
+    ![Dashboard](8_Dashboard.JPG)
