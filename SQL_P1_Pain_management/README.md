@@ -1,5 +1,5 @@
 # Introduction
-These are data on pain control quality from a hospital, collected by nurses, evaluated by patients before hospital discharge from Feb to Aug 2023. 
+These are data on pain control quality from a hospital, collected by nurses, and evaluated by patients before hospital discharge from Feb to Aug 2023. 
 This project is to analyse post-op pain management quality of the hospital and identify their issues for corrective actions.
 
 SQL queries? Check them out here: [pope.sql](/SQL_P1_Pain_management/Pope.sql)
