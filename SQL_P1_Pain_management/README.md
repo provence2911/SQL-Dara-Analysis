@@ -40,7 +40,7 @@ Quick insight:
 Overall, the success rate is > 80%. 
 Feb has the lowest rate because of the data sample. Data collection was only within the final week of Feb 2023.
 
-![Successful rate by month](SQL_P1_Pain_management/Chart_images/1_Successful_rate_pain_free.JPG)
+![Successful rate by month](1_Successful_rate_pain_free.JPG)
 
 
 *Column graph shows successful rate of pain-free/mild pain surgeries by month).*
@@ -79,7 +79,7 @@ Here is the percentage of patients having efficient pain control within 1 hour s
 On average, over 90% of patients have pain response from medical staff. 95% of these responses are effective.
 For the other 10% that don't receive pain response, these data were missing.
 
-![Pain rescue](SQL_P1_Pain_management/Chart_images/2_Pain_rescue.JPG)
+![Pain rescue](2_Pain_rescue.JPG)
 
 
 ### 3. Ratio per type of rescue
