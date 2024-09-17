@@ -65,8 +65,8 @@ GROUP BY month(date_of_surgery),FORMAT(date_of_surgery,'MMM')
 GO
 
 
-/* Did patient receive response from medical staff when having pain?
-Number of successful rescue? */
+-- Did patient receive response from medical staff when having pain?
+-- Number of successful rescue?
 
 DROP VIEW IF exists response_to_pain;
 
